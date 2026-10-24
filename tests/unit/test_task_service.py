@@ -108,3 +108,13 @@ def test_delete_task(service):
 def test_delete_missing_task(service):
     with pytest.raises(TaskNotFoundError):
         service.delete_task(1)
+def test_list_tasks_overdue_filter():
+    current = {"today": TODAY}
+    service = TaskService(InMemoryTaskRepository(), today=lambda: current["today"])
+    service.create_task("Telat", deadline=TODAY)
+    service.create_task("Aman", deadline=date(2026, 11, 30))
+    service.create_task("Tanpa deadline")
+
+    current["today"] = date(2026, 10, 25)  # satu hari berlalu
+
+    assert [t.title for t in service.list_tasks(overdue=True)] == ["Telat"]
