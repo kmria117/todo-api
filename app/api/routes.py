@@ -20,10 +20,10 @@ def create_task(body: TaskCreate, service: TaskService = Depends(get_task_servic
 def list_tasks(
     status: Optional[Status] = None,
     priority: Optional[Priority] = None,
+    overdue: Optional[bool] = None,
     service: TaskService = Depends(get_task_service),
 ):
-    return service.list_tasks(status=status, priority=priority)
-
+    return service.list_tasks(status=status, priority=priority, overdue=overdue)
 
 @router.get("/{task_id}", response_model=TaskResponse)
 def get_task(task_id: int, service: TaskService = Depends(get_task_service)):
